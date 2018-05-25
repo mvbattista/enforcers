@@ -26,3 +26,4 @@ class DefaultsMixin(object):
 class EventViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = Event.objects.order_by('start_date')
     serializer_class = EventSerializer
+    base_name = 'event-list'
