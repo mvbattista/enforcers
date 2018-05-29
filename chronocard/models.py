@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import ValidationError
 
 # Create your models here.
 class User(AbstractUser):
@@ -7,10 +8,26 @@ class User(AbstractUser):
 
 class Event(models.Model):
     name = models.CharField(max_length=32)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    work_start_date = models.DateTimeField()
-    work_end_date = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    work_start_date = models.DateField()
+    work_end_date = models.DateField()
+
+    def clean(self, *args, **kwargs):
+        super(Event, self).clean(*args, **kwargs)
+        if self.end_date < self.start_date:
+            raise ValidationError('Cannot have start_date after end_date')
+        if self.work_end_date < self.work_start_date:
+            raise ValidationError('Cannot have work_start_date after work_end_date')
+        if self.work_start_date > self.start_date:
+            raise ValidationError('Cannot have work_start_date after start_date')
+        if self.work_end_date < self.end_date:
+            raise ValidationError('Cannot have work_end_date before end_date')
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(Event, self).save(*args, **kwargs)
+
 
 class EventUser(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)

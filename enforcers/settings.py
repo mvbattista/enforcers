@@ -139,3 +139,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'EnforcerZone'
+}
