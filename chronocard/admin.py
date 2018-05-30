@@ -36,7 +36,6 @@ class EnforcerUserAdmin(UserAdmin):
         }),
     )
 
-
 admin.site.register(User, EnforcerUserAdmin)
 admin.site.register(Location)
 admin.site.register(Event)

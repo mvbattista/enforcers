@@ -13,16 +13,18 @@ class Event(models.Model):
     work_start_date = models.DateField()
     work_end_date = models.DateField()
 
+    def __str__(self):
+        return '{} ({} - {})'.format(self.name, self.start_date, self.end_date)
+
     def clean(self, *args, **kwargs):
         super(Event, self).clean(*args, **kwargs)
+        if self.start_date < self.work_start_date:
+            raise ValidationError('Cannot have work_start_date after start_date')
         if self.end_date < self.start_date:
             raise ValidationError('Cannot have start_date after end_date')
-        if self.work_end_date < self.work_start_date:
-            raise ValidationError('Cannot have work_start_date after work_end_date')
-        if self.work_start_date > self.start_date:
-            raise ValidationError('Cannot have work_start_date after start_date')
         if self.work_end_date < self.end_date:
-            raise ValidationError('Cannot have work_end_date before end_date')
+            raise ValidationError('Cannot have end_date after work_end_date')
+
 
     def save(self, *args, **kwargs):
         self.full_clean()
