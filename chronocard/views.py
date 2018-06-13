@@ -1,4 +1,4 @@
-from rest_framework import authentication, permissions, viewsets
+from rest_framework import authentication, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
