@@ -2,29 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e04835c5-65f5-4007-a95e-cfc9776674e9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/enforcers.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/migrations/0002_auto_20180424_1938.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/migrations/0003_auto_20180529_1838.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/serializers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/chronocard/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/enforcers/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/enforcers/settings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/enforcers/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/enforcers/wsgi.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
