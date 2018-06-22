@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Event
 from .serializers import EventSerializer
+from .permissions import IsDeputy
 
 # Create your views here.
 
@@ -17,7 +18,7 @@ class DefaultsMixin(object):
 
     permission_classes = (
         IsAuthenticated,
-        # permissions.IsAdminUser,
+        IsAdminUser,
     )
 
     paginate_by = 25
@@ -34,6 +35,13 @@ class EventViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = Event.objects.order_by('start_date')
     serializer_class = EventSerializer
     base_name = 'event-list'
+
+
+class CheckInViewSet(DefaultsMixin, viewsets.ModelViewSet):
+    action_permissions = {
+        IsDeputy: ['create', 'update', 'partial_update', 'destroy'],
+        IsAuthenticated: ['list', 'retrieve']
+    }
 
 class UserViewSet(viewsets.ViewSet):
     """
