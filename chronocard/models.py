@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import ValidationError
@@ -34,8 +36,14 @@ class Event(models.Model):
 class EventUser(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)
     user = models.ForeignKey('User', on_delete=models.DO_NOTHING, null=False, blank=False)
-    total_time = models.FloatField(default=0)
+    # total_time = models.FloatField(default=0)
     badge_id = models.CharField(max_length=16, null=False)
+
+    @property
+    def total_time(self):
+        all_check_ins = [x.total_time_value for x in self.checkin_set.all() if x.total_time_value]
+        return sum(all_check_ins, timedelta())
+
 
 class Location(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)
@@ -52,4 +60,22 @@ class EventShift(models.Model):
 class Checkin(models.Model):
     event_user = models.ForeignKey('EventUser', on_delete=models.DO_NOTHING, null=False, blank=False)
     start_date = models.DateTimeField(null=False)
-    end_date = models.DateTimeField(null=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(Checkin, self).save(*args, **kwargs)
+
+    @property
+    def total_time_value(self):
+        if not self.end_date:
+            return None
+        else:
+            return self.end_date - self.start_date
+
+    def total_time(self):
+        if not self.end_date:
+            return ''
+        else:
+            return str(self.end_date - self.start_date)
+

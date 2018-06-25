@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Event, EventShift, Location
+from .models import User, Event, EventShift, Location, EventUser, Checkin
 
 # Register your models here.
 
@@ -36,7 +36,32 @@ class EnforcerUserAdmin(UserAdmin):
         }),
     )
 
+
+class CheckinInline(admin.TabularInline):
+    model = Checkin
+    # list_display = ('start_date', 'end_date', 'total_time')
+    fields = ('start_date', 'end_date', 'total_time')
+    readonly_fields = ['total_time',]
+
+class EnforcerEventUserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'get_user_handle', 'get_event_name', 'badge_id',)
+    inlines = [CheckinInline,]
+    # fields = ['event', 'user', 'badge_id', 'total_time']
+    readonly_fields = ['total_time', ]
+
+    def get_user_handle(self, obj):
+        return obj.user.handle
+
+    def get_event_name(self, obj):
+        return obj.event.name
+
+    get_user_handle.admin_order_field = 'user'
+    get_user_handle.short_description = 'User Handle'
+    get_event_name.admin_order_field = 'event'
+    get_event_name.short_description = 'Event'
+
 admin.site.register(User, EnforcerUserAdmin)
+admin.site.register(EventUser, EnforcerEventUserAdmin)
 admin.site.register(Location)
 admin.site.register(Event)
 admin.site.register(EventShift)
