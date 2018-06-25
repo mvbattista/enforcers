@@ -45,7 +45,7 @@ class CheckinInline(admin.TabularInline):
 
 class EnforcerEventUserAdmin(admin.ModelAdmin):
     list_display = ('id', 'get_user_handle', 'get_event_name', 'badge_id',)
-    inlines = [CheckinInline,]
+    inlines = [CheckinInline, ]
     # fields = ['event', 'user', 'badge_id', 'total_time']
     readonly_fields = ['total_time', ]
 
