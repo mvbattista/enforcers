@@ -8,6 +8,10 @@ from django.core.validators import ValidationError
 class User(AbstractUser):
     handle = models.CharField(max_length=30, blank=True)
 
+    @property
+    def is_deputy(self):
+        return True if self.groups.get(name='deputies') else False
+
 class Event(models.Model):
     name = models.CharField(max_length=32)
     start_date = models.DateField()
@@ -31,6 +35,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Event, self).save(*args, **kwargs)
+
 
 
 class EventUser(models.Model):

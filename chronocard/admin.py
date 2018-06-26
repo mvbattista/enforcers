@@ -24,8 +24,8 @@ class EnforcerUserAdmin(UserAdmin):
     fieldsets = (
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email', 'handle')}),
         (None, {'fields': ('username', 'password')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       # 'groups', 'user_permissions'
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups',
+                                       # 'user_permissions'
                                        )}),
         # (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )

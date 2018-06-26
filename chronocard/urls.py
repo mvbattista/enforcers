@@ -4,6 +4,9 @@ from . import views
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r'event', views.EventViewSet)
+router.register(r'check_in', views.CheckInViewSet)
+router.register(r'user', views.UserViewSet)
+router.register(r'event_user', views.EventUserViewSet)
 
 # TODO:
 # user POST (admin), PUT, GET,

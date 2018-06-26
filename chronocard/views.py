@@ -1,9 +1,9 @@
 from rest_framework import authentication, viewsets
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, DjangoModelPermissions, DjangoObjectPermissions
 
 
-from .models import Event
-from .serializers import EventSerializer
+from .models import Event, Checkin, User, EventUser
+from .serializers import EventSerializer, CheckInSerializer, UserSerializer, EventUserSerializer
 from .permissions import IsDeputy
 
 # Create your views here.
@@ -16,10 +16,11 @@ class DefaultsMixin(object):
         authentication.TokenAuthentication,
     )
 
-    permission_classes = (
-        IsAuthenticated,
-        IsAdminUser,
-    )
+    # permission_classes = (
+    #     IsAuthenticated,
+    #     IsAdminUser,
+    # )
+    # permission_classes = (DjangoModelPermissions,)
 
     paginate_by = 25
     paginate_by_param = 'page_size'
@@ -34,15 +35,30 @@ class DefaultsMixin(object):
 class EventViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = Event.objects.order_by('start_date')
     serializer_class = EventSerializer
-    base_name = 'event-list'
+    # base_name = 'event-list'
 
+
+# class CheckInViewSet(DefaultsMixin, viewsets.ModelViewSet):
+#     action_permissions = {
+#         IsDeputy: ['create', 'update', 'partial_update', 'destroy'],
+#         IsAuthenticated: ['list', 'retrieve']
+#     }
 
 class CheckInViewSet(DefaultsMixin, viewsets.ModelViewSet):
-    action_permissions = {
-        IsDeputy: ['create', 'update', 'partial_update', 'destroy'],
-        IsAuthenticated: ['list', 'retrieve']
-    }
+    queryset = Checkin.objects.order_by('start_date')
+    serializer_class = CheckInSerializer
+    permission_classes = (DjangoModelPermissions,)
 
+
+class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):
+    queryset = User.objects.order_by('handle')
+    serializer_class = UserSerializer
+    permission_classes = (DjangoObjectPermissions,)
+
+class EventUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
+    queryset = EventUser.objects.order_by('user__handle')
+    serializer_class = EventUserSerializer
+    permission_classes = (DjangoModelPermissions,)
 
 
 # class UserViewSet(viewsets.ViewSet):
