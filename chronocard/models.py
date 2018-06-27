@@ -46,7 +46,7 @@ class EventUser(models.Model):
 
     @property
     def total_time(self):
-        all_check_ins = [x.total_time_value for x in self.checkin_set.all() if x.total_time_value]
+        all_check_ins = [x.total_time for x in self.checkin_set.all() if x.total_time]
         return sum(all_check_ins, timedelta())
 
 
@@ -67,20 +67,20 @@ class Checkin(models.Model):
     start_date = models.DateTimeField(null=False)
     end_date = models.DateTimeField(null=True, blank=True)
 
+    def clean(self, *args, **kwargs):
+        super(Checkin, self).clean(*args, **kwargs)
+        if self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id, end_date=None).exists():
+            raise ValidationError('Cannot have more than one check-in open per user.')
+        if self.end_date < self.start_date:
+            raise ValidationError('Cannot have start_date after end_date')
+
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Checkin, self).save(*args, **kwargs)
 
     @property
-    def total_time_value(self):
+    def total_time(self):
         if not self.end_date:
             return None
         else:
             return self.end_date - self.start_date
-
-    def total_time(self):
-        if not self.end_date:
-            return ''
-        else:
-            return str(self.end_date - self.start_date)
-

@@ -1,5 +1,4 @@
-from rest_framework.serializers import ModelSerializer
-# from rest_framework.permissions import IsAdminUser
+from rest_framework.serializers import ModelSerializer, DurationField, BooleanField, ReadOnlyField
 from .models import Event, EventUser, Checkin, EventShift, User
 
 
@@ -10,24 +9,26 @@ class EventSerializer(ModelSerializer):
 
 
 class UserSerializer(ModelSerializer):
+    is_deputy = BooleanField(read_only=True)
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'is_staff', 'is_deputy', 'handle')
 
-    def get_is_deputy(self, obj):
-        return obj.is_deputy
-
 
 class EventUserSerializer(ModelSerializer):
+    handle = ReadOnlyField(source='user.handle')
+
     class Meta:
         model = EventUser
-        fields = '__all__'
+        fields = ('id', 'event', 'user', 'handle', 'badge_id', )
 
 
 class CheckInSerializer(ModelSerializer):
+    total_time = DurationField(read_only=True)
+
     class Meta:
         model = Checkin
-        fields = '__all__'
+        fields = ('id', 'event_user', 'start_date', 'end_date', 'total_time')
 
 
 class EventShiftSerializer(ModelSerializer):
