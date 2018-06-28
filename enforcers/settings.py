@@ -139,6 +139,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    'NON_FIELD_ERRORS_KEY': 'errors',
 }
 
 SUIT_CONFIG = {

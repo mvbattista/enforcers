@@ -69,9 +69,9 @@ class Checkin(models.Model):
 
     def clean(self, *args, **kwargs):
         super(Checkin, self).clean(*args, **kwargs)
-        if self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id, end_date=None).exists():
+        if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id, end_date=None).count() == 1:
             raise ValidationError('Cannot have more than one check-in open per user.')
-        if self.end_date < self.start_date:
+        if self.end_date and self.start_date and self.end_date < self.start_date:
             raise ValidationError('Cannot have start_date after end_date')
 
     def save(self, *args, **kwargs):

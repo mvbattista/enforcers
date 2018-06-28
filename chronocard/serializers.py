@@ -1,8 +1,17 @@
-from rest_framework.serializers import ModelSerializer, DurationField, BooleanField, ReadOnlyField
+from rest_framework.serializers import (ModelSerializer, ValidationError, BooleanField, ReadOnlyField, DurationField)
 from .models import Event, EventUser, Checkin, EventShift, User
 
 
 class EventSerializer(ModelSerializer):
+
+    def validate(self, data):
+        if data['start_date'] < data['work_start_date']:
+            raise ValidationError('Cannot have work_start_date after start_date')
+        if data['end_date'] < data['start_date']:
+            raise ValidationError('Cannot have start_date after end_date')
+        if data['work_end_date'] < data['end_date']:
+            raise ValidationError('Cannot have end_date after work_end_date')
+
     class Meta:
         model = Event
         fields = '__all__'
@@ -25,6 +34,10 @@ class EventUserSerializer(ModelSerializer):
 
 class CheckInSerializer(ModelSerializer):
     total_time = DurationField(read_only=True)
+
+    def validate(self, data):
+        if data.get('end_date') is None and Checkin.objects.filter(event_user_id=data['event_user'], end_date=None).exists():
+            raise ValidationError('Cannot have more than one check-in open per user.')
 
     class Meta:
         model = Checkin
