@@ -1,6 +1,7 @@
+from django.core.validators import ValidationError as DjangoValidationError
 from rest_framework import authentication, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, DjangoModelPermissions, DjangoObjectPermissions
-
+from rest_framework.serializers import ValidationError
 
 from .models import Event, Checkin, User, EventUser
 from .serializers import EventSerializer, CheckInSerializer, UserSerializer, EventUserSerializer
@@ -49,6 +50,22 @@ class CheckInViewSet(DefaultsMixin, viewsets.ModelViewSet):
     serializer_class = CheckInSerializer
     permission_classes = (DjangoModelPermissions,)
 
+    # def perform_update(self, serializer):
+    #     try:
+    #         instance = serializer.save()
+    #     except DjangoValidationError as detail:
+    #         msg = "%s" % detail
+    #         raise ValidationError(msg)
+    #
+    # def perform_create(self, serializer):
+    #     try:
+    #         instance = serializer.save()
+    #     except DjangoValidationError as detail:
+    #         msg = "%s" % detail
+    #         raise ValidationError(msg)
+    #
+    # def perform_destroy(self, instance):
+    #     instance.delete()
 
 class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = User.objects.order_by('handle')
