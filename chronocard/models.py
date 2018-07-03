@@ -67,6 +67,33 @@ class Checkin(models.Model):
     start_date = models.DateTimeField(null=False)
     end_date = models.DateTimeField(null=True, blank=True)
 
+    # Budget Flight time validation logic:
+    # Ns = New Start Date
+    # Ne = New End Date
+    # Xs = Existing Start Date
+    # Xe = Existing End Date
+    # Ms = Modifying Start Date (Ns on a Xs)
+    # Me = Modifying End Date (Ne on a Xe)
+
+    # Good criteria:
+    # Ns < Ne
+    # Ns < Xs && Ne <= Xs
+    # Ns >= Xe && Ne > Xe
+    # Ms > now || Ms == Xs
+    # Me > now
+
+    # Bad cases:
+    # Ns >= Ne                Start date after or equal to end date
+    # Ns == Xs && Ne == Xe    Exact copy of an existing budget flight
+    # Ns == Xs                New flight cannot share same starting point of an existing flight
+    # Ne == Xe                New flight cannot share tsame ending point of an existing flight
+    # Ns > Xs && Ne < Xe      New flight is within the span of an existing flight
+    # Ns < Xs && Ns > Xe      New flight encompasses the span of an existing flight
+    # Ns < Xs && Ne > Xs      New flight starts in the span of an existing flight
+    # Ns < Xe && Ne > Xe      New flight ends in the span of an existing flight
+    # Ms != Xs && Ms <= now   Modified start date (if modified) cannot be in the past
+    # Me < now
+
     def clean(self, *args, **kwargs):
         super(Checkin, self).clean(*args, **kwargs)
         if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id, end_date=None).count() == 1:

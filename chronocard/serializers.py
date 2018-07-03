@@ -36,9 +36,11 @@ class CheckInSerializer(ModelSerializer):
     total_time = DurationField(read_only=True)
 
     def validate(self, data):
-        if data.get('end_date') is None and Checkin.objects.filter(event_user_id=data['event_user'], end_date=None).exists():
+        if data.get('end_date') is None and Checkin.objects.filter(event_user_id=data['event_user'], end_date=None)\
+                .exists():
             raise ValidationError('Cannot have more than one check-in open per user.')
-        if Checkin.objects.filter(start_date__gte=data['start_date'], end_date__lte=data['start_date']).exclude(id=data.get('id')).exists():
+        if Checkin.objects.filter(start_date__gte=data['start_date'], end_date__lte=data['start_date'])\
+                .exclude(id=data.get('id')).exists():
             raise ValidationError('Start date is in another check-in period')
 
     class Meta:
