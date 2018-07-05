@@ -1,4 +1,5 @@
 from rest_framework.serializers import (Serializer, ModelSerializer, ValidationError, BooleanField, ReadOnlyField, DurationField, IntegerField)
+from django.core.validators import ValidationError as DjangoValidationError
 from .models import Event, EventUser, Checkin, EventShift, User
 
 
@@ -36,12 +37,24 @@ class CheckInSerializer(ModelSerializer):
     total_time = DurationField(read_only=True)
 
     def validate(self, data):
-        if data.get('end_date') is None and Checkin.objects.filter(event_user_id=data['event_user'], end_date=None)\
-                .exists():
-            raise ValidationError('Cannot have more than one check-in open per user.')
-        if Checkin.objects.filter(start_date__gte=data['start_date'], end_date__lte=data['start_date'])\
-                .exclude(id=data.get('id')).exists():
-            raise ValidationError('Start date is in another check-in period')
+        instance = Checkin(**data)
+        try:
+            instance.clean()
+        except DjangoValidationError as e:
+            raise ValidationError(e.args[0])
+        # This can't edit an open check-in then.
+        # if data.get('end_date') is None and Checkin.objects.filter(event_user_id=data['event_user'], end_date=None)\
+        #         .exists():
+        #     raise ValidationError('Cannot have more than one check-in open per user.')
+        # if Checkin.objects.filter(start_date__gte=data['start_date'], end_date__lte=data['start_date'])\
+        #         .exclude(id=data.get('id')).exists():
+        #     raise ValidationError('Start date is in another check-in period')
+
+    # def create(self, validated_data):
+    #     if validated_data.get('end_date') is None and Checkin.objects.filter(event_user_id=validated_data['event_user'],
+    #                                                                          end_date=None).exists():
+    #         raise ValidationError('Cannot have more than one check-in open per user.')
+
 
     class Meta:
         model = Checkin

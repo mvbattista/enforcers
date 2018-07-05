@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import ValidationError
 
@@ -64,10 +65,10 @@ class EventShift(models.Model):
 
 class Checkin(models.Model):
     event_user = models.ForeignKey('EventUser', on_delete=models.DO_NOTHING, null=False, blank=False)
-    start_date = models.DateTimeField(null=False)
+    start_date = models.DateTimeField(null=False, default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)
 
-    # Budget Flight time validation logic:
+    # Check-in time validation logic:
     # Ns = New Start Date
     # Ne = New End Date
     # Xs = Existing Start Date
@@ -84,22 +85,34 @@ class Checkin(models.Model):
 
     # Bad cases:
     # Ns >= Ne                Start date after or equal to end date
-    # Ns == Xs && Ne == Xe    Exact copy of an existing budget flight
-    # Ns == Xs                New flight cannot share same starting point of an existing flight
-    # Ne == Xe                New flight cannot share tsame ending point of an existing flight
-    # Ns > Xs && Ne < Xe      New flight is within the span of an existing flight
-    # Ns < Xs && Ns > Xe      New flight encompasses the span of an existing flight
-    # Ns < Xs && Ne > Xs      New flight starts in the span of an existing flight
-    # Ns < Xe && Ne > Xe      New flight ends in the span of an existing flight
+    # Ns == Xs && Ne == Xe    Exact copy of an existing check-in
+    # Ns == Xs                New check-in cannot share same starting point of an existing check-in
+    # Ne == Xe                New check-in cannot share same ending point of an existing check-in
+    # Ns > Xs && Ne < Xe      New check-in is within the span of an existing check-in
+    # Ns < Xs && Ns > Xe      New check-in encompasses the span of an existing check-in
+    # Ns < Xs && Ne > Xs      New check-in starts in the span of an existing check-in
+    # Ns < Xe && Ne > Xe      New check-in ends in the span of an existing check-in
     # Ms != Xs && Ms <= now   Modified start date (if modified) cannot be in the past
     # Me < now
 
     def clean(self, *args, **kwargs):
         super(Checkin, self).clean(*args, **kwargs)
-        if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id, end_date=None).count() == 1:
+        if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id,
+                                                                                end_date=None).count() == 1:
             raise ValidationError('Cannot have more than one check-in open per user.')
-        if self.end_date and self.start_date and self.end_date < self.start_date:
-            raise ValidationError('Cannot have start_date after end_date')
+        if self.end_date and self.start_date and self.end_date <= self.start_date:
+            raise ValidationError('Cannot have start_date after or equal to end_date')
+        if self.start_date and Checkin.objects.filter(event_user_id=self.event_user_id, start_date__lte=self.start_date,
+                                                      end_date__gte=self.start_date).exists():
+            raise ValidationError('Cannot have start_date in an existing check-in period')
+        if self.end_date and Checkin.objects.filter(event_user_id=self.event_user_id, start_date__lte=self.end_date,
+                                                    end_date__gte=self.end_date).exists():
+            raise ValidationError('Cannot have end_date in an existing check-in period')
+        if self.start_date and self.end_date and Checkin.objects.filter(event_user_id=self.event_user_id,
+                                                                        start_date__gte=self.start_date,
+                                                                        end_date__lte=self.end_date).exists():
+            raise ValidationError('Cannot have start_date in an existing check-in period')
+
 
     def save(self, *args, **kwargs):
         self.full_clean()
