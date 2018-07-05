@@ -41,6 +41,7 @@ class CheckinInline(admin.TabularInline):
     model = Checkin
     # list_display = ('start_date', 'end_date', 'total_time')
     fields = ('start_date', 'end_date', 'total_time')
+    ordering = ('start_date',)
     readonly_fields = ['total_time',]
     extra = 1
 

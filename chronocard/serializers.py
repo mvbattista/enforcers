@@ -6,12 +6,11 @@ from .models import Event, EventUser, Checkin, EventShift, User
 class EventSerializer(ModelSerializer):
 
     def validate(self, data):
-        if data['start_date'] < data['work_start_date']:
-            raise ValidationError('Cannot have work_start_date after start_date')
-        if data['end_date'] < data['start_date']:
-            raise ValidationError('Cannot have start_date after end_date')
-        if data['work_end_date'] < data['end_date']:
-            raise ValidationError('Cannot have end_date after work_end_date')
+        instance = Event(**data)
+        try:
+            instance.clean()
+        except DjangoValidationError as e:
+            raise ValidationError(e.args[0])
 
     class Meta:
         model = Event

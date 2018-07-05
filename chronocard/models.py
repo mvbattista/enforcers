@@ -99,20 +99,28 @@ class Checkin(models.Model):
         super(Checkin, self).clean(*args, **kwargs)
         if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id,
                                                                                 end_date=None).count() == 1:
-            raise ValidationError('Cannot have more than one check-in open per user.')
+            raise ValidationError('Cannot have more than one check-in open per event user.')
+        if self.start_date and self.end_date and self.start_date >= self.end_date:
+            raise ValidationError('Cannot have end_date before start_date. What are you, a Time Lord?')
         if self.end_date and self.start_date and self.end_date <= self.start_date:
             raise ValidationError('Cannot have start_date after or equal to end_date')
         if self.start_date and Checkin.objects.filter(event_user_id=self.event_user_id, start_date__lte=self.start_date,
-                                                      end_date__gte=self.start_date).exists():
+                                                      end_date__gte=self.start_date).exclude(id=self.id).exists():
             raise ValidationError('Cannot have start_date in an existing check-in period')
         if self.end_date and Checkin.objects.filter(event_user_id=self.event_user_id, start_date__lte=self.end_date,
-                                                    end_date__gte=self.end_date).exists():
+                                                    end_date__gte=self.end_date).exclude(id=self.id).exists():
             raise ValidationError('Cannot have end_date in an existing check-in period')
         if self.start_date and self.end_date and Checkin.objects.filter(event_user_id=self.event_user_id,
                                                                         start_date__gte=self.start_date,
-                                                                        end_date__lte=self.end_date).exists():
+                                                                        end_date__lte=self.end_date)\
+                .exclude(id=self.id).exists():
             raise ValidationError('Cannot have start_date in an existing check-in period')
-
+        if self.end_date and self.end_date > timezone.now() + timedelta(minutes=1):
+            raise ValidationError('Cannot preemptively check someone out.')
+        if self.end_date and self.end_date.date() > self.event_user.event.work_end_date:
+            raise ValidationError('Cannot work after the work_end_date of the event')
+        if self.start_date and self.start_date.date() < self.event_user.event.work_start_date:
+            raise ValidationError('Cannot work before the work_start_date of the event')
 
     def save(self, *args, **kwargs):
         self.full_clean()
