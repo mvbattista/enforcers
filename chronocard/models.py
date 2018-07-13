@@ -42,7 +42,6 @@ class Event(models.Model):
 class EventUser(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)
     user = models.ForeignKey('User', on_delete=models.DO_NOTHING, null=False, blank=False)
-    # total_time = models.FloatField(default=0)
     badge_id = models.CharField(max_length=16, null=False)
 
     @property
