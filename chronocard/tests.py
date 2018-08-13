@@ -1,8 +1,15 @@
 from django.test import TestCase, Client
+import django
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'enforcers.settings')
+django.setup()
+
+from django.conf import settings
 from django.contrib.auth.models import Group
 from django.urls import reverse, include, path
 from rest_framework.test import APITestCase, APIRequestFactory, APIClient
 from rest_framework import status
+import pytest
 
 from chronocard.models import User
 
@@ -30,13 +37,19 @@ class ChronocardTestCase(APITestCase):
     def test_users(self):
         url = '/api/user'
         response = self.user_client.get(url)
-        # print(response.body)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print('Users')
+        result = response.json()
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert response.status_code == status.HTTP_200_OK
+        assert len(result) == 3
+        # print('Users')
 
     def test_event_users(self):
         url = '/api/event_user'
         response = self.user_client.get(url)
+        result = response.json()
         # print(response.body)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        print('Event Users')
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
+        assert response.status_code == status.HTTP_200_OK
+        assert len(result) == 3
+        # print('Event Users')
+
