@@ -58,7 +58,9 @@ ROOT_URLCONF = 'enforcers.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -148,3 +150,6 @@ REST_FRAMEWORK = {
 SUIT_CONFIG = {
     'ADMIN_NAME': 'EnforcerZone'
 }
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
