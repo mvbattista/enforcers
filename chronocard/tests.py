@@ -41,6 +41,7 @@ class ChronocardTestCase(APITestCase):
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
         assert response.status_code == status.HTTP_200_OK
         assert len(result) == 3
+        # TODO - Create User from self-service registration
         # print('Users')
 
     def test_event_users(self):
@@ -50,6 +51,18 @@ class ChronocardTestCase(APITestCase):
         # print(response.body)
         # self.assertEqual(response.status_code, status.HTTP_200_OK)
         assert response.status_code == status.HTTP_200_OK
-        assert len(result) == 3
+        assert len(result) == 0
+        # TODO - Deputy/Admin can create event users, regular users cannot.
         # print('Event Users')
+
+    # TODO - Only admins can create and edit events
+    # TODO - Check event dates logic
+
+    # TODO - Check-in logic on times
+    # TODO - Permission to create/edit only for deputy/admin
+
+    # TODO - Event shift
+    # TODO - Locations
+
+
 

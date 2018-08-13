@@ -104,3 +104,4 @@ class EventUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
 #
 #     def destroy(self, request, pk=None):
 #         pass
+
