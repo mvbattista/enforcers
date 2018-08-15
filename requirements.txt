@@ -1,4 +1,5 @@
 Django
 django-suit
+django-timezone-field
 djangorestframework
 pytz

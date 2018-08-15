@@ -1,9 +1,11 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
+import pytz
 
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import ValidationError
+from timezone_field import TimeZoneField
 
 # Create your models here.
 class User(AbstractUser):
@@ -19,6 +21,7 @@ class Event(models.Model):
     end_date = models.DateField()
     work_start_date = models.DateField()
     work_end_date = models.DateField()
+    time_zone = TimeZoneField(default='US/Eastern')
 
     def __str__(self):
         return '{} ({} - {})'.format(self.name, self.start_date, self.end_date)

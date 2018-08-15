@@ -6,15 +6,18 @@ from .models import User, Event, EventShift, Location, EventUser, Checkin
 
 # Register your models here.
 
+
 class EnforcerUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'handle')
 
+
 class EnforcerUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         # fields = ('username', 'first_name', 'last_name', 'email', 'handle')
+
 
 class EnforcerUserAdmin(UserAdmin):
     add_form = EnforcerUserCreationForm
@@ -42,11 +45,15 @@ class CheckinInline(admin.TabularInline):
     # list_display = ('start_date', 'end_date', 'total_time')
     fields = ('start_date', 'end_date', 'total_time')
     ordering = ('start_date',)
-    readonly_fields = ['total_time',]
+    readonly_fields = ['total_time', ]
     extra = 1
 
+
 class EnforcerEventUserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_user_handle', 'get_event_name', 'badge_id',)
+    list_display = ('id', 'get_user_handle', 'get_event_name', 'badge_id', 'total_time',)
+    list_filter = ('event__name', )
+    list_per_page = 100
+    ordering = ('id',)
     inlines = [CheckinInline, ]
     # fields = ['event', 'user', 'badge_id', 'total_time']
     readonly_fields = ['total_time', ]
@@ -61,6 +68,7 @@ class EnforcerEventUserAdmin(admin.ModelAdmin):
     get_user_handle.short_description = 'User Handle'
     get_event_name.admin_order_field = 'event'
     get_event_name.short_description = 'Event'
+
 
 admin.site.register(User, EnforcerUserAdmin)
 admin.site.register(EventUser, EnforcerEventUserAdmin)
