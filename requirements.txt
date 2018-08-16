@@ -3,3 +3,5 @@ django-suit
 django-timezone-field
 djangorestframework
 pytz
+django-heroku
+gunicorn
