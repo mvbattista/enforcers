@@ -1,9 +1,23 @@
-from rest_framework.serializers import (Serializer, ModelSerializer, ValidationError, BooleanField, ReadOnlyField, DurationField, IntegerField)
+import pytz
+
+from rest_framework.serializers import (Serializer, ModelSerializer, ValidationError, BooleanField, ReadOnlyField, DurationField, IntegerField, Field)
 from django.core.validators import ValidationError as DjangoValidationError
 from .models import Event, EventUser, Checkin, EventShift, User
 
 
+class TimezoneField(Field):
+    def to_representation(self, obj):
+        return str(obj)
+
+    def to_internal_value(self, data):
+        try:
+            return pytz.timezone(str(data))
+        except pytz.exceptions.UnknownTimeZoneError:
+            raise ValidationError('Unknown timezone')
+
+
 class EventSerializer(ModelSerializer):
+    time_zone = TimezoneField()
 
     def validate(self, data):
         instance = Event(**data)

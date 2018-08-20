@@ -45,7 +45,7 @@ class Event(models.Model):
 class EventUser(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)
     user = models.ForeignKey('User', on_delete=models.DO_NOTHING, null=False, blank=False)
-    badge_id = models.CharField(max_length=16, null=False)
+    badge_id = models.CharField(max_length=16, null=True, blank=True)
 
     @property
     def total_time(self):
