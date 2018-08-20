@@ -1,5 +1,5 @@
-from datetime import timedelta, datetime
-import pytz
+from datetime import timedelta
+# import pytz
 
 from django.db import models
 from django.utils import timezone
@@ -8,12 +8,15 @@ from django.core.validators import ValidationError
 from timezone_field import TimeZoneField
 
 # Create your models here.
+
+
 class User(AbstractUser):
     handle = models.CharField(max_length=30, blank=True)
 
     @property
     def is_deputy(self):
         return True if self.groups.get(name='deputies') else False
+
 
 class Event(models.Model):
     name = models.CharField(max_length=32)
@@ -27,7 +30,7 @@ class Event(models.Model):
         return '{} ({} - {})'.format(self.name, self.start_date, self.end_date)
 
     def clean(self, *args, **kwargs):
-        super(Event, self).clean(*args, **kwargs)
+        super(Event, self).clean()
         if self.start_date < self.work_start_date:
             raise ValidationError('Cannot have work_start_date after start_date')
         if self.end_date < self.start_date:
@@ -35,11 +38,15 @@ class Event(models.Model):
         if self.work_end_date < self.end_date:
             raise ValidationError('Cannot have end_date after work_end_date')
 
-
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Event, self).save(*args, **kwargs)
 
+    @property
+    def is_active(self):
+        sd = self.work_start_date <= timezone.datetime.today().date()
+        ed = timezone.datetime.today().date() <= self.work_end_date
+        return sd and ed
 
 
 class EventUser(models.Model):
@@ -59,11 +66,13 @@ class Location(models.Model):
     location = models.CharField(max_length=64)
     instruction = models.TextField()
 
+
 class EventShift(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)
     location = models.ForeignKey('Location', on_delete=models.DO_NOTHING, null=False, blank=False)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
+
 
 class Checkin(models.Model):
     event_user = models.ForeignKey('EventUser', on_delete=models.DO_NOTHING, null=False, blank=False)
@@ -98,7 +107,7 @@ class Checkin(models.Model):
     # Me < now
 
     def clean(self, *args, **kwargs):
-        super(Checkin, self).clean(*args, **kwargs)
+        super(Checkin, self).clean()
         if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id,
                                                                                 end_date=None).count() == 1:
             raise ValidationError('Cannot have more than one check-in open per event user.')

@@ -1,4 +1,5 @@
 from django.core.validators import ValidationError as DjangoValidationError
+from django.shortcuts import render, redirect
 from rest_framework import authentication, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, DjangoModelPermissions, DjangoObjectPermissions
 from rest_framework.serializers import ValidationError
@@ -15,6 +16,7 @@ class DefaultsMixin(object):
     authentication_classes = (
         authentication.BasicAuthentication,
         authentication.TokenAuthentication,
+        authentication.SessionAuthentication,
     )
 
     # permission_classes = (
@@ -104,4 +106,3 @@ class EventUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
 #
 #     def destroy(self, request, pk=None):
 #         pass
-

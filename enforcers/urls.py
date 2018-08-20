@@ -22,9 +22,9 @@ from chronocard.urls import router as chronocard_router
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('portal/', TemplateView.as_view(template_name='home.html'), name='home'),
     path('admin/', admin.site.urls),
     path('api/token', obtain_auth_token, name='api-token'),
     path('api/', include(chronocard_router.urls)),
-    path('portal/', include('django.contrib.auth.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]
