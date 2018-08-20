@@ -5,6 +5,27 @@
 {% block content %}
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
+
+<script>
+(function() {
+  var flickerAPI = "/api/check_in";
+  $.get( flickerAPI)
+    .done(function( data ) {
+        $('#raw-text').text(JSON.stringify(data));
+    });
+})();
+</script>
+
+<pre id="raw-text">
+Text in a pre element
+is displayed in a fixed-width
+font, and it preserves
+both      spaces and
+line breaks
+</pre>
+
+
+
   <p><a href="{% url 'logout' %}">logout</a></p>
 {% else %}
   <p>You are not logged in</p>
