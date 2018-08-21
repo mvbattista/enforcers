@@ -153,7 +153,7 @@ SUIT_CONFIG = {
     'ADMIN_NAME': 'EnforcerZone'
 }
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/portal/'
 LOGOUT_REDIRECT_URL = '/'
 
 django_heroku.settings(locals())
