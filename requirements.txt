@@ -5,3 +5,5 @@ djangorestframework
 pytz
 django-heroku
 gunicorn
+requests
+django-filter
