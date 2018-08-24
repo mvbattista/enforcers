@@ -154,6 +154,6 @@ SUIT_CONFIG = {
 }
 
 LOGIN_REDIRECT_URL = '/portal/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/portal/'
 
 django_heroku.settings(locals())
