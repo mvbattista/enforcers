@@ -53,6 +53,9 @@ class EventUser(models.Model):
         all_check_ins = [x.total_time for x in self.checkin_set.all() if x.total_time]
         return sum(all_check_ins, timedelta())
 
+    class Meta:
+        unique_together = ('event', 'user',)
+
 
 class Location(models.Model):
     event = models.ForeignKey('Event', on_delete=models.DO_NOTHING, null=False, blank=False)

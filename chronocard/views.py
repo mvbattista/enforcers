@@ -2,6 +2,7 @@ from django.core.validators import ValidationError as DjangoValidationError
 from rest_framework import authentication, viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, DjangoModelPermissions, DjangoObjectPermissions
 from rest_framework.serializers import ValidationError
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Event, Checkin, User, EventUser
 from .serializers import EventSerializer, CheckInSerializer, UserSerializer, EventUserSerializer
@@ -26,6 +27,8 @@ class DefaultsMixin(object):
     paginate_by = 25
     paginate_by_param = 'page_size'
     max_paginate_by = 100
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = '__all__'
 
     action_permissions = {
         IsAdminUser: ['create', 'update', 'partial_update', 'destroy'],
@@ -36,6 +39,7 @@ class DefaultsMixin(object):
 class EventViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = Event.objects.order_by('start_date')
     serializer_class = EventSerializer
+    filter_fields = ('name', 'start_date', 'end_date', 'work_start_date', 'work_end_date')
     # base_name = 'event-list'
 
 
