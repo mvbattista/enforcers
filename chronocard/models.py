@@ -17,6 +17,12 @@ class User(AbstractUser):
     def is_deputy(self):
         return True if self.groups.get(name='deputies') else False
 
+    def __str__(self):
+        if self.handle:
+            return self.handle
+        else:
+            return '(user) {}'.format(self.username)
+
 
 class Event(models.Model):
     name = models.CharField(max_length=32)
