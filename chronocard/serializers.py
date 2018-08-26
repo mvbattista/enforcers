@@ -25,6 +25,7 @@ class EventSerializer(ModelSerializer):
             instance.clean()
         except DjangoValidationError as e:
             raise ValidationError(e.args[0])
+        return super(EventSerializer, self).validate(data)
 
     class Meta:
         model = Event
@@ -55,6 +56,7 @@ class CheckInSerializer(ModelSerializer):
             instance.clean()
         except DjangoValidationError as e:
             raise ValidationError(e.args[0])
+        return super(CheckInSerializer, self).validate(data)
         # This can't edit an open check-in then.
         # if data.get('end_date') is None and Checkin.objects.filter(event_user_id=data['event_user'], end_date=None)\
         #         .exists():
