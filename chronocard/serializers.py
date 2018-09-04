@@ -44,7 +44,7 @@ class EventUserSerializer(ModelSerializer):
 
     class Meta:
         model = EventUser
-        fields = ('id', 'event', 'user', 'handle', 'badge_id', )
+        fields = ('id', 'event', 'user', 'handle', 'badge_id', 'total_time')
 
 
 class CheckInSerializer(ModelSerializer):
