@@ -59,6 +59,17 @@ class EventUser(models.Model):
         all_check_ins = [x.total_time for x in self.checkin_set.all() if x.total_time]
         return sum(all_check_ins, timedelta())
 
+    @property
+    def time_report(self):
+        result = {}
+        start = self.event.work_start_date
+        stop = self.event.work_end_date
+        while start <= stop:
+            day_sum = sum([x.total_time for x in self.checkin_set.filter(start_date__date=start)], timedelta())
+            result[str(start)] = day_sum
+            start = start + timedelta(days=1)
+        return result
+
     class Meta:
         unique_together = ('event', 'user',)
 
@@ -117,8 +128,10 @@ class Checkin(models.Model):
 
     def clean(self, *args, **kwargs):
         super(Checkin, self).clean()
-        if self.start_date and self.end_date is None and Checkin.objects.filter(event_user_id=self.event_user_id,
-                                                                                end_date=None).count() == 1:
+        if self.start_date and self.end_date is None and \
+                Checkin.objects.filter(event_user_id=self.event_user_id, end_date=None).exclude(
+                    id=self.id).count() == 1:
+            # Also filter out self
             raise ValidationError('Cannot have more than one check-in open per event user.')
         if self.start_date and self.end_date and self.start_date >= self.end_date:
             raise ValidationError('Cannot have end_date before start_date. What are you, a Time Lord?')
