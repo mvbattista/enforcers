@@ -49,8 +49,17 @@ class EventUserSerializer(ModelSerializer):
 
 class CheckInSerializer(ModelSerializer):
     total_time = DurationField(read_only=True)
+    copy_from_shift = IntegerField(write_only=True)
 
     def validate(self, data):
+        if self.copy_from_shift:
+            get_obj = EventShift.objects.filter(id=self.copy_from_shift).first()
+            if get_obj:
+                for f in ('start_date', 'end_date'):
+                    if not data.get(f):
+                        data[f] = getattr(get_obj, f)
+
+
         instance = Checkin(**data)
         try:
             instance.clean()
