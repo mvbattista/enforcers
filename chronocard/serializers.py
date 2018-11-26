@@ -52,13 +52,13 @@ class CheckInSerializer(ModelSerializer):
     copy_from_shift = IntegerField(write_only=True)
 
     def validate(self, data):
-        if self.copy_from_shift:
-            get_obj = EventShift.objects.filter(id=self.copy_from_shift).first()
+        if 'copy_from_shift' in data:
+            get_obj = EventShift.objects.filter(id=data['copy_from_shift']).first()
             if get_obj:
                 for f in ('start_date', 'end_date'):
                     if not data.get(f):
                         data[f] = getattr(get_obj, f)
-
+            del data['copy_from_shift']
 
         instance = Checkin(**data)
         try:
@@ -82,7 +82,7 @@ class CheckInSerializer(ModelSerializer):
 
     class Meta:
         model = Checkin
-        fields = ('id', 'event_user', 'start_date', 'end_date', 'total_time')
+        fields = ('id', 'event_user', 'start_date', 'end_date', 'total_time', 'copy_from_shift')
 
 
 class EventShiftSerializer(ModelSerializer):

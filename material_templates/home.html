@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+
+<div class="md-menu-demo menudemoBasicUsage" ng-controller="BasicDemoCtrl as ctrl" ng-cloak="" ng-app="MyApp">
+
+
+  Hi {{ user.username }}!
+  <p><a href="{% url 'logout' %}">logout</a></p>
+
+<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <select class="mdl-textfield__input" id="event-select" name="event">
+    </select>
+    <label class="mdl-textfield__label" for="event-select">Choose Event</label>
+  </div>
+
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}

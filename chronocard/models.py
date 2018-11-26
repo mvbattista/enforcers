@@ -91,7 +91,9 @@ class EventShift(models.Model):
     end_date = models.DateTimeField()
 
     def __str__(self):
-        return '{} - {} ({} - {})'.format(self.event.name, self.location, self.start_date, self.end_date)
+        sd = self.start_date.astimezone(self.event.time_zone)
+        ed = self.end_date.astimezone(self.event.time_zone)
+        return '{} - {} ({} - {})'.format(self.event.name, self.location, sd, ed)
 
 
 class Checkin(models.Model):

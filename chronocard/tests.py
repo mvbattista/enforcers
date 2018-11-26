@@ -55,7 +55,7 @@ class ChronocardTestCase(APITestCase):
         # TODO - Deputy/Admin can create event users, regular users cannot.
         # print('Event Users')
 
-    # TODO - Only admins can create and edit events
+    # TODO - Only admins can create and edit rawEvents
     # TODO - Check event dates logic
 
     # TODO - Check-in logic on times

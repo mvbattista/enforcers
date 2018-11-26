@@ -15,16 +15,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+# from django.conf.urls import url
 from django.views.generic.base import TemplateView
+
+from django.contrib.auth import views as auth_views
+
+from . import forms
 
 from chronocard.urls import router as chronocard_router
 
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    # url(r'^$', TemplateView.as_view(template_name="base.html"), name='index')
+    path('', TemplateView.as_view(template_name='base.html'), name='index'),
     path('admin/', admin.site.urls),
     path('api/token', obtain_auth_token, name='api-token'),
     path('api/', include(chronocard_router.urls)),
-    path('portal/', include('django.contrib.auth.urls')),
+    path('', include('django.contrib.auth.urls')),
+    # path('login/', auth_views.LoginView.as_view(), name='login'),
+    # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
