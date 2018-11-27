@@ -1,14 +1,33 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block libraries %}
+    <script src="{% static "portal.js" %}"></script>
+{% endblock %}
 
 {% block title %}Enforcer Chronocard Reporter{% endblock %}
 
 {% block content %}
     {% if user.is_authenticated %}
-        <select id="event-select" name="event" class="chosen-select" data-placeholder="Choose an event...">
-        <option></option>
-        </select>
-        <label class="label" for="event-select">Choose Event</label>
+        <form>
+            <div class="form-group">
+                <label for="event-select">Event</label>
+                <div style="clear: both;"></div>
+                <select id="event-select" name="event" class="chosen-select form-control"
+                        data-placeholder="Choose an event...">
+                    <option></option>
+                </select>
+            </div>
+            <label for="event-user-select">Event</label>
+            <div style="clear: both;"></div>
+            <div id="user-select-div" class="form-group" style="display:none">
+                <select id="event-user-select" name="event-user" class="chosen-select"
+                        data-placeholder="Choose an Enforcer...">
+                    <option></option>
+                </select>
+            </div>
 
+        </form>
 
     {% else %}
         <p>You are not logged in</p>

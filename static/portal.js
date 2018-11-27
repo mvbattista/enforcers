@@ -14,12 +14,13 @@ function resizeChosen() {
 let rawEvents = [];
 const openCheckinURL = '/api/check_in?end_date__isnull=True';
 const eventURL = '/api/event';
-const eventUsersURL = '/api/event_user?event=';
+const eventUsersURL = '/api/event_user';
+const checkinURL = '/api/check_in';
 $(document).ready(function () {
     $(".chosen-select").chosen({width: "auto"});
 
     jQuery(window).on('resize', resizeChosen);
-    $.ajax({
+    $.get({
         'url': eventURL,
         'data': null,
         'success': function (data) {
@@ -29,11 +30,36 @@ $(document).ready(function () {
             $.each(rawEvents, function (i, eventObject) {
                 $('#event-select').append($("<option></option>").attr("value", eventObject.id).text(eventObject.name));
             });
-            $('#event-select').set
+            if (currentEvents.length) {
+                $('#event-select')
+            }
             $('.chosen-select').trigger("chosen:updated");
             // resizeChosen();
         },
         'dataType': 'json'
+    });
+    $('#event-select').chosen().change(function () {
+        if ($('#event-select').val()) {
+            $('#user-select-div').show();
+
+            $.get({
+                'url': eventUsersURL,
+                'data': {'event': $('#event-select').val()},
+                'success': function (data) {
+                    // console.log('data is' + data);
+                    eventUsers = data;
+                    $('#event-user-select').find('option').remove().end().append('<option></option>');
+                    // currentEvents = rawEvents.filter(event => isEventCurrent(event));
+                    $.each(eventUsers, function (i, eventUserObject) {
+                        $('#event-user-select').append($("<option></option>").attr("value", eventUserObject.id).text(eventUserObject.handle));
+                    });
+                    $('.chosen-select').trigger("chosen:updated");
+                    // resizeChosen();
+                },
+                'dataType': 'json'
+            });
+            $.get();
+        }
     });
 
 });
