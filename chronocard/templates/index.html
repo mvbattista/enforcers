@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Enforcer Chronocard Reporter{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <select id="event-select" name="event" class="chosen-select" data-placeholder="Choose an event...">
+        <option></option>
+        </select>
+        <label class="label" for="event-select">Choose Event</label>
+
+
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">login</a>
+    {% endif %}
+{% endblock %}

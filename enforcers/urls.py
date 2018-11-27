@@ -28,8 +28,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     # url(r'^$', TemplateView.as_view(template_name="base.html"), name='index')
-    path('', TemplateView.as_view(template_name='base.html'), name='index'),
-    path('admin/', admin.site.urls, name='admin'),
+    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('admin/', admin.site.urls),
     path('api/token', obtain_auth_token, name='api-token'),
     path('api/', include(chronocard_router.urls)),
     path('', include('django.contrib.auth.urls')),
