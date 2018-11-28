@@ -54,6 +54,9 @@ const eventShiftsURL = '/api/event_shift';
 const locationURL = '/api/location';
 $(document).ready(function () {
     $(".chosen-select").chosen({width: "auto"});
+    $(".timepicker-input").timepicker({
+        icons: {up: 'fas fa-chevron-up', down: 'fas fa-chevron-down'}
+    });
 
     jQuery(window).on('resize', resizeChosen);
     $.get({

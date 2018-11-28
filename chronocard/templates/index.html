@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
-{% block libraries %}
+{% block javascript %}
     {% if user.is_authenticated %}
         <script src="{% static "portal.js" %}"></script>
     {% endif %}
@@ -31,12 +32,24 @@
             <div id="user-info" style="display: none">
                 <h3>Total Hours: <span id="user-total-hours">0</span></h3>
                 <ul id="checkin-list"></ul>
-                <div id="add-new-checkin">
-                    <select id="event-shift-select" name="event-shift" class="chosen-select"
-                            data-placeholder="Copy from shift...">
-                        <option></option>
-                    </select>
-                </div>
+                <form class="form-inline">
+                    <div id="add-new-checkin">
+                        <select id="event-shift-select" name="event-shift" class="chosen-select"
+                                data-placeholder="Copy from shift...">
+                            <option></option>
+                        </select>
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            <input id="checkin-start-time" type="text" class="form-control input-small
+                            timepicker-input">
+                            <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                        </div>
+                        <div class="input-group bootstrap-timepicker timepicker">
+                            <input id="checkin-end-time" type="text" class="form-control input-small timepicker-input">
+                            <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                        </div>
+                        <button class="btn btn-primary" id="add-checkin">{% trans 'Save' %}</button>
+                    </div>
+                </form>
             </div>
 
 
