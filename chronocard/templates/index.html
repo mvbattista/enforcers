@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block libraries %}
-    <script src="{% static "portal.js" %}"></script>
+    {% if user.is_authenticated %}
+        <script src="{% static "portal.js" %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block title %}Enforcer Chronocard Reporter{% endblock %}
@@ -26,6 +28,12 @@
                     <option></option>
                 </select>
             </div>
+            <div id="user-info" style="display: none">
+                <h3>Total Hours: <span id="user-total-hours">0</span></h3>
+                <ul id="checkin-list"></ul>
+
+            </div>
+
 
         </form>
 

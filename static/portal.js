@@ -11,6 +11,26 @@ function resizeChosen() {
     });
 }
 
+function checkInToString(checkInObject) {
+    let startDatetime = new Date(checkInObject.start_date);
+    let endDatetime = new Date(checkInObject.end_date);
+    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    var dayName = days[startDatetime.getDay()];
+    return `${dayName}: ${startDatetime.toLocaleTimeString()} - ${endDatetime.toLocaleTimeString()}`
+}
+
+function formatTotalTime(secs) {
+    function pad(num) {
+        return ("0" + num).slice(-2);
+    }
+    let minutes = Math.floor(secs / 60);
+    secs = secs % 60;
+    let hours = Math.floor(minutes / 60)
+    minutes = minutes % 60;
+    return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
+    // return pad(hours)+":"+pad(minutes)+":"+pad(secs); for old browsers
+}
+
 let rawEvents = [];
 const openCheckinURL = '/api/check_in?end_date__isnull=True';
 const eventURL = '/api/event';
@@ -41,6 +61,7 @@ $(document).ready(function () {
     $('#event-select').chosen().change(function () {
         if ($('#event-select').val()) {
             $('#user-select-div').show();
+            $('#user-info').hide();
 
             $.get({
                 'url': eventUsersURL,
@@ -58,8 +79,35 @@ $(document).ready(function () {
                 },
                 'dataType': 'json'
             });
-            $.get();
         }
+    });
+    $('#event-user-select').chosen().change(function () {
+        if ($('#event-user-select').val()) {
+            $('#user-info').show();
+            let chosenEventUser = eventUsers.find(obj => obj.id == $('#event-user-select').val());
+            let totalTime = formatTotalTime(parseInt(chosenEventUser.total_time));
+            $('#user-total-hours').empty().text(totalTime);
+            $('#checkin-list').empty();
+
+            $.get({
+                'url': checkinURL,
+                'data': {'event_user': $('#event-user-select').val()},
+                'success': function (data) {
+                    // console.log('data is' + data);
+                    checkIns = data;
+                    // $('#event-user-select').find('option').remove().end().append('<option></option>');
+                    // currentEvents = rawEvents.filter(event => isEventCurrent(event));
+                    $.each(checkIns, function (i, checkInObject) {
+                        $('#checkin-list').append($("<li></li>").text(checkInToString(checkInObject)));
+                    });
+                    // $('.chosen-select').trigger("chosen:updated");
+                    // resizeChosen();
+                },
+                'dataType': 'json'
+            });
+
+        }
+
     });
 
 });
