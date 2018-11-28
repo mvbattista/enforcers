@@ -4,11 +4,14 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, DjangoModel
 from rest_framework.serializers import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Event, Checkin, User, EventUser
-from .serializers import EventSerializer, CheckInSerializer, UserSerializer, EventUserSerializer
+from .models import Event, Checkin, User, EventUser, EventShift, Location
+from .serializers import EventSerializer, CheckInSerializer, UserSerializer, EventUserSerializer, \
+    EventShiftSerializer, LocationSerializer
 from .permissions import IsDeputy
 
+
 # Create your views here.
+
 
 class DefaultsMixin(object):
     # Default settings for views
@@ -71,16 +74,29 @@ class CheckInViewSet(DefaultsMixin, viewsets.ModelViewSet):
     # def perform_destroy(self, instance):
     #     instance.delete()
 
+
 class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = User.objects.order_by('handle')
     serializer_class = UserSerializer
     permission_classes = (DjangoObjectPermissions,)
 
+
+class EventShiftViewSet(DefaultsMixin, viewsets.ModelViewSet):
+    queryset = EventShift.objects.order_by('start_date')
+    serializer_class = EventShiftSerializer
+    permission_classes = (DjangoObjectPermissions,)
+
+
+class LocationViewSet(DefaultsMixin, viewsets.ModelViewSet):
+    queryset = Location.objects.order_by('description')
+    serializer_class = LocationSerializer
+    permission_classes = (DjangoObjectPermissions,)
+
+
 class EventUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
     queryset = EventUser.objects.order_by('user__handle')
     serializer_class = EventUserSerializer
     permission_classes = (DjangoModelPermissions,)
-
 
 # class UserViewSet(viewsets.ViewSet):
 #     """
@@ -108,4 +124,3 @@ class EventUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
 #
 #     def destroy(self, request, pk=None):
 #         pass
-

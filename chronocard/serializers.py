@@ -2,7 +2,7 @@ import pytz
 
 from rest_framework.serializers import (Serializer, ModelSerializer, ValidationError, BooleanField, ReadOnlyField, DurationField, IntegerField, Field)
 from django.core.validators import ValidationError as DjangoValidationError
-from .models import Event, EventUser, Checkin, EventShift, User
+from .models import Event, EventUser, Checkin, EventShift, User, Location
 
 
 class TimezoneField(Field):
@@ -89,6 +89,13 @@ class EventShiftSerializer(ModelSerializer):
     class Meta:
         model = EventShift
         fields = '__all__'
+
+
+class LocationSerializer(ModelSerializer):
+    class Meta:
+        model = Location
+        fields = '__all__'
+
 
 class CheckInManualSerializer(Serializer):
     id = IntegerField()

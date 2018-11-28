@@ -11,11 +11,24 @@ function resizeChosen() {
     });
 }
 
+function shiftToString(shiftObject) {
+    let startDatetime = new Date(shiftObject.start_date);
+    let endDatetime = new Date(shiftObject.end_date);
+    let eventID = shiftObject.event;
+    let dayName = getDayName(startDatetime);
+    let shiftLocation = eventDetails[eventID]['locations'].find(obj => obj.id == shiftObject.location);
+    return `${dayName} ${shiftLocation} (${startDatetime.toLocaleTimeString()} - ${endDatetime.toLocaleTimeString()})`;
+}
+
+function getDayName(dateObject) {
+    let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[dateObject.getDay()];
+}
+
 function checkInToString(checkInObject) {
     let startDatetime = new Date(checkInObject.start_date);
     let endDatetime = new Date(checkInObject.end_date);
-    var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    var dayName = days[startDatetime.getDay()];
+    let dayName = getDayName(startDatetime);
     return `${dayName}: ${startDatetime.toLocaleTimeString()} - ${endDatetime.toLocaleTimeString()}`
 }
 
@@ -32,10 +45,13 @@ function formatTotalTime(secs) {
 }
 
 let rawEvents = [];
+let eventDetails = {}
 const openCheckinURL = '/api/check_in?end_date__isnull=True';
 const eventURL = '/api/event';
 const eventUsersURL = '/api/event_user';
 const checkinURL = '/api/check_in';
+const eventShiftsURL = '/api/event_shift';
+const locationURL = '/api/location';
 $(document).ready(function () {
     $(".chosen-select").chosen({width: "auto"});
 
@@ -62,10 +78,11 @@ $(document).ready(function () {
         if ($('#event-select').val()) {
             $('#user-select-div').show();
             $('#user-info').hide();
+            let eventID = $('#event-select').val()
 
             $.get({
                 'url': eventUsersURL,
-                'data': {'event': $('#event-select').val()},
+                'data': {'event': eventID},
                 'success': function (data) {
                     // console.log('data is' + data);
                     eventUsers = data;
@@ -75,6 +92,27 @@ $(document).ready(function () {
                         $('#event-user-select').append($("<option></option>").attr("value", eventUserObject.id).text(eventUserObject.handle));
                     });
                     $('.chosen-select').trigger("chosen:updated");
+
+                    if (!(eventID in eventDetails)) {
+                        let details = {};
+                        $.get({
+                            'url': locationURL,
+                            'data': {'event': eventID},
+                            'dataType': 'json',
+                            'success': function (data) {
+                                details['locations'] = data;
+                            }
+                        });
+                        $.get({
+                            'url': eventShiftsURL,
+                            'data': {'event': eventID},
+                            'dataType': 'json',
+                            'success': function (data) {
+                                details['shifts'] = data;
+                            }
+                        });
+                        eventDetails[eventID] = details;
+                    }
                     // resizeChosen();
                 },
                 'dataType': 'json'
@@ -84,14 +122,15 @@ $(document).ready(function () {
     $('#event-user-select').chosen().change(function () {
         if ($('#event-user-select').val()) {
             $('#user-info').show();
-            let chosenEventUser = eventUsers.find(obj => obj.id == $('#event-user-select').val());
+            let eventUserID = $('#event-user-select').val()
+            let chosenEventUser = eventUsers.find(obj => obj.id == eventUserID);
             let totalTime = formatTotalTime(parseInt(chosenEventUser.total_time));
             $('#user-total-hours').empty().text(totalTime);
             $('#checkin-list').empty();
 
             $.get({
                 'url': checkinURL,
-                'data': {'event_user': $('#event-user-select').val()},
+                'data': {'event_user': eventUserID},
                 'success': function (data) {
                     // console.log('data is' + data);
                     checkIns = data;
