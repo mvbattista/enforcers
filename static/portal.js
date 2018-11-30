@@ -1,8 +1,7 @@
  function getCookie(name) {
      var start = document.cookie.indexOf(name + "=");
      var len = start + name.length + 1;
-     if ((!start) & amp; & amp;
-         (name != document.cookie.substring(0, name.length))) {
+     if ((!start) && (name != document.cookie.substring(0, name.length))) {
          return null;
      }
      if (start == -1) return null;
