@@ -1,4 +1,17 @@
-function isEventCurrent(eventObj) {
+ function getCookie(name) {
+     var start = document.cookie.indexOf(name + "=");
+     var len = start + name.length + 1;
+     if ((!start) & amp; & amp;
+         (name != document.cookie.substring(0, name.length))) {
+         return null;
+     }
+     if (start == -1) return null;
+     var end = document.cookie.indexOf(';', len);
+     if (end == -1) end = document.cookie.length;
+     return unescape(document.cookie.substring(len, end));
+ }
+
+ function isEventCurrent(eventObj) {
     const todaysDate = new Date();
     const startDate = Date(eventObj.work_start_date);
     const endDate = Date(eventObj.work_end_date);
@@ -64,7 +77,7 @@ $(document).ready(function () {
         'url': eventURL,
         'data': null,
         'beforeSend': function (xhr) {
-            xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'));
+            xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
         },
         'success': function (data) {
             // console.log('data is' + data);
@@ -91,7 +104,7 @@ $(document).ready(function () {
                 'url': eventUsersURL,
                 'data': {'event': eventID},
                 'beforeSend': function (xhr) {
-                    xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'));
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
                 },
                 'success': function (data) {
                     // console.log('data is' + data);
@@ -142,7 +155,7 @@ $(document).ready(function () {
                 'url': checkinURL,
                 'data': {'event_user': eventUserID},
                 'beforeSend': function (xhr) {
-                    xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'));
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
                 },
                 'success': function (data) {
                     // console.log('data is' + data);
