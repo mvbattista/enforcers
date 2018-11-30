@@ -36,6 +36,7 @@ function formatTotalTime(secs) {
     function pad(num) {
         return ("0" + num).slice(-2);
     }
+
     let minutes = Math.floor(secs / 60);
     secs = secs % 60;
     let hours = Math.floor(minutes / 60)
@@ -62,6 +63,9 @@ $(document).ready(function () {
     $.get({
         'url': eventURL,
         'data': null,
+        'beforeSend': function (xhr) {
+            xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'));
+        },
         'success': function (data) {
             // console.log('data is' + data);
             rawEvents = data;
@@ -86,6 +90,9 @@ $(document).ready(function () {
             $.get({
                 'url': eventUsersURL,
                 'data': {'event': eventID},
+                'beforeSend': function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'));
+                },
                 'success': function (data) {
                     // console.log('data is' + data);
                     eventUsers = data;
@@ -134,6 +141,9 @@ $(document).ready(function () {
             $.get({
                 'url': checkinURL,
                 'data': {'event_user': eventUserID},
+                'beforeSend': function (xhr) {
+                    xhr.setRequestHeader('X-CSRFToken', $.cookie('csrftoken'));
+                },
                 'success': function (data) {
                     // console.log('data is' + data);
                     checkIns = data;
