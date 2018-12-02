@@ -49,7 +49,7 @@ class EventUserSerializer(ModelSerializer):
 
 class CheckInSerializer(ModelSerializer):
     total_time = DurationField(read_only=True)
-    copy_from_shift = IntegerField(write_only=True)
+    copy_from_shift = IntegerField(write_only=True, required=False)
 
     def validate(self, data):
         if 'copy_from_shift' in data:
