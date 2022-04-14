@@ -1,5 +1,5 @@
 Django
-django-suit
+django-jazzmin
 django-timezone-field
 djangorestframework
 pytz

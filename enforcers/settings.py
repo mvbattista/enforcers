@@ -14,6 +14,8 @@ import os
 import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import scheduler.apps
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -32,7 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'suit',
+    'jazzmin',
     'timezone_field',
     'django_filters',
     'django.contrib.admin',
@@ -43,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'chronocard.apps.ChronocardConfig'
+    'chronocard.apps.ChronocardConfig',
+    'scheduler.apps.SchedulerConfig',
 ]
 
 MIDDLEWARE = [
@@ -169,5 +172,7 @@ SUIT_CONFIG = {
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 django_heroku.settings(locals())
